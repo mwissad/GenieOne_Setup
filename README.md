@@ -88,8 +88,13 @@ This is the full install. It:
 1. Checks CLI version, authentication, catalog, and warehouse
 2. Renders the six Genie definitions for `YOUR_CATALOG.bid_evaluation_demo`
 3. Validates the Databricks Asset Bundle
-4. Deploys the six Genie spaces and the setup job
-5. Runs the job that creates all 16 tables
+4. Deploys the data setup job
+5. Runs the job so the 16 tables exist
+6. Deploys the six Genie spaces against those tables
+
+Genie spaces are created last on purpose. Databricks checks that every
+referenced table exists when a space is created, so the data job must finish
+before the spaces are deployed.
 
 Optional arguments:
 

@@ -1,17 +1,41 @@
 # Troubleshooting
 
-## `unknown field: genie_spaces`
+## `unknown field: genie_spaces` or CLI too old
 
-Upgrade the Databricks CLI. Genie Space bundle resources require a CLI version
-that supports the direct bundle engine.
+Upgrade the Databricks CLI to **v1.3.0 or newer**. Genie Space bundle
+resources require the direct bundle engine.
 
-## Authentication fails
+```bash
+# macOS
+brew tap databricks/tap
+brew upgrade databricks/tap/databricks
+databricks version
+```
 
-Authenticate the target profile, then rerun the installer:
+## Authentication fails after a CLI upgrade
+
+A v1.x CLI can reject a token cached by v0.x. Re-sign in:
 
 ```bash
 databricks auth login https://YOUR-WORKSPACE-HOST --profile YOUR_PROFILE
 ```
+
+If you need the existing session for one retry:
+
+```bash
+DATABRICKS_AUTH_STORAGE=plaintext ./install.sh \
+  --profile YOUR_PROFILE \
+  --warehouse-id YOUR_WAREHOUSE_ID \
+  --catalog YOUR_CATALOG
+```
+
+Then re-login so you are not depending on plaintext token storage.
+
+## Genie space deploy fails because tables are missing
+
+The installer now deploys and runs the data job before creating Genie spaces.
+Rerun `./install.sh` with the same arguments. Do not deploy the spaces by
+hand until `YOUR_CATALOG.YOUR_SCHEMA` contains the 16 demo tables.
 
 ## Catalog or warehouse check fails
 

@@ -67,18 +67,42 @@ minimum = (1, 3, 0)
 if current < minimum:
     raise SystemExit(
         f"Databricks CLI v{sys.argv[1]} is too old; v1.3.0+ is required "
-        "for Genie Space bundle resources"
+        "for Genie Space bundle resources.\n"
+        "macOS: brew upgrade databricks/tap/databricks\n"
+        "Linux: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh"
     )
 PY
 
-echo "[1/6] Checking Databricks authentication..."
-databricks current-user me --profile "$PROFILE" >/dev/null
+echo "[1/7] Checking Databricks authentication..."
+auth_ok="false"
+auth_err="$(mktemp)"
+if databricks current-user me --profile "$PROFILE" >/dev/null 2>"$auth_err"; then
+  auth_ok="true"
+elif [[ -z "${DATABRICKS_AUTH_STORAGE:-}" ]] && grep -q "DATABRICKS_AUTH_STORAGE=plaintext" "$auth_err"; then
+  echo "Cached token is from an older CLI. Retrying with DATABRICKS_AUTH_STORAGE=plaintext..."
+  export DATABRICKS_AUTH_STORAGE=plaintext
+  if databricks current-user me --profile "$PROFILE" >/dev/null; then
+    auth_ok="true"
+    echo "Auth succeeded with the legacy cache. Re-login later with:"
+    echo "  databricks auth login <workspace-host> --profile ${PROFILE}"
+  fi
+fi
+rm -f "$auth_err"
+if [[ "$auth_ok" != "true" ]]; then
+  cat >&2 <<EOF
+Authentication failed for profile '${PROFILE}'.
+Re-sign in, then rerun the installer:
 
-echo "[2/6] Checking target catalog and SQL warehouse..."
+  databricks auth login https://YOUR-WORKSPACE-HOST --profile ${PROFILE}
+EOF
+  exit 1
+fi
+
+echo "[2/7] Checking target catalog and SQL warehouse..."
 databricks catalogs get "$CATALOG" --profile "$PROFILE" >/dev/null
 databricks warehouses get "$WAREHOUSE_ID" --profile "$PROFILE" >/dev/null
 
-echo "[3/6] Rendering Genie definitions for ${CATALOG}.${SCHEMA}..."
+echo "[3/7] Rendering Genie definitions for ${CATALOG}.${SCHEMA}..."
 python3 scripts/render_assets.py --catalog "$CATALOG" --schema "$SCHEMA"
 
 BUNDLE_ARGS=(
@@ -90,7 +114,7 @@ BUNDLE_ARGS=(
   --var "can_run_group=$CAN_RUN_GROUP"
 )
 
-echo "[4/6] Validating the Databricks Asset Bundle..."
+echo "[4/7] Validating the Databricks Asset Bundle..."
 databricks bundle validate "${BUNDLE_ARGS[@]}"
 
 if [[ "$VALIDATE_ONLY" == "true" ]]; then
@@ -98,11 +122,16 @@ if [[ "$VALIDATE_ONLY" == "true" ]]; then
   exit 0
 fi
 
-echo "[5/6] Deploying the setup job and six Genie spaces..."
-databricks bundle deploy "${BUNDLE_ARGS[@]}"
+# Genie spaces fail if their tables do not exist yet. Deploy and run the
+# data job first, then create the six spaces against live tables.
+echo "[5/7] Deploying the data setup job..."
+databricks bundle deploy --select jobs.setup_data --auto-approve "${BUNDLE_ARGS[@]}"
 
-echo "[6/6] Creating the 16 Unity Catalog tables..."
+echo "[6/7] Creating the 16 Unity Catalog tables..."
 databricks bundle run setup_data "${BUNDLE_ARGS[@]}"
+
+echo "[7/7] Deploying the six Genie spaces..."
+databricks bundle deploy --auto-approve "${BUNDLE_ARGS[@]}"
 
 cat <<EOF
 

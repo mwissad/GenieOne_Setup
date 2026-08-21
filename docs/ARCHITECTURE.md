@@ -5,10 +5,11 @@
 1. `install.sh` verifies the target Databricks profile, catalog, and warehouse.
 2. `scripts/render_assets.py` replaces the namespace tokens in the six
    committed Genie templates.
-3. Databricks Asset Bundles deploys the six spaces and the setup job.
-4. The setup job runs `src/data_generator.py` on serverless compute.
-5. The notebook creates the target schema and overwrites all 16 synthetic
-   Delta tables.
+3. Databricks Asset Bundles deploys only the setup job.
+4. The setup job runs `src/data_generator.py` on serverless compute and
+   overwrites all 16 synthetic Delta tables.
+5. Databricks Asset Bundles deploys the six Genie spaces after the tables
+   exist. Genie rejects space creation when a referenced table is missing.
 
 ## Agent-to-data mapping
 
