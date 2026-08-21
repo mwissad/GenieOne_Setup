@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "data_sources": {
+    "tables": [
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.bid_line_items"
+      },
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.bids"
+      },
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.rfp_projects"
+      }
+    ]
+  }
+}

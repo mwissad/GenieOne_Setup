@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "data_sources": {
+    "tables": [
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.budget_allocations"
+      },
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.pricing_benchmarks"
+      }
+    ]
+  }
+}

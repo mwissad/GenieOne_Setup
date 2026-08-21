@@ -1,0 +1,105 @@
+bundle:
+  name: genieone-setup
+  engine: direct
+
+variables:
+  warehouse_id:
+    description: SQL Warehouse ID used by all Genie spaces
+  catalog:
+    description: Existing Unity Catalog where the demo schema is created
+    default: main
+  schema:
+    description: Schema created for the demo tables
+    default: bid_evaluation_demo
+  can_run_group:
+    description: Workspace group granted CAN_RUN on the Genie spaces
+    default: users
+
+resources:
+  genie_spaces:
+    bid_management:
+      title: "Bid Management Agent - Al Ghurair"
+      description: "RFP pipeline tracking, bid comparisons, line-item analysis, and weighted scoring."
+      warehouse_id: ${var.warehouse_id}
+      file_path: ./.generated/bid_management.geniespace.json
+      parent_path: /Shared/al-ghurair-procurement
+      permissions:
+        - level: CAN_RUN
+          group_name: ${var.can_run_group}
+
+    financial_analysis:
+      title: "Financial Analysis Agent - Al Ghurair"
+      description: "Commercial proposal validation, market benchmarks, and project budget tracking."
+      warehouse_id: ${var.warehouse_id}
+      file_path: ./.generated/financial_analysis.geniespace.json
+      parent_path: /Shared/al-ghurair-procurement
+      permissions:
+        - level: CAN_RUN
+          group_name: ${var.can_run_group}
+
+    supplier_intelligence:
+      title: "Supplier Intelligence Agent - Al Ghurair"
+      description: "Supplier profiles, quarterly performance ratings, and certification status."
+      warehouse_id: ${var.warehouse_id}
+      file_path: ./.generated/supplier_intelligence.geniespace.json
+      parent_path: /Shared/al-ghurair-procurement
+      permissions:
+        - level: CAN_RUN
+          group_name: ${var.can_run_group}
+
+    market_intelligence:
+      title: "Market Intelligence Agent - Al Ghurair"
+      description: "UAE construction competitor bids, market indices, and project benchmarks."
+      warehouse_id: ${var.warehouse_id}
+      file_path: ./.generated/market_intelligence.geniespace.json
+      parent_path: /Shared/al-ghurair-procurement
+      permissions:
+        - level: CAN_RUN
+          group_name: ${var.can_run_group}
+
+    contract_performance:
+      title: "Contract Performance Agent - Al Ghurair"
+      description: "Historical contract delivery, SLA performance, variations, and penalties."
+      warehouse_id: ${var.warehouse_id}
+      file_path: ./.generated/contract_performance.geniespace.json
+      parent_path: /Shared/al-ghurair-procurement
+      permissions:
+        - level: CAN_RUN
+          group_name: ${var.can_run_group}
+
+    risk_assessment:
+      title: "Risk Assessment Agent - Al Ghurair"
+      description: "Supplier risk, UAE compliance, and financial health assessment."
+      warehouse_id: ${var.warehouse_id}
+      file_path: ./.generated/risk_assessment.geniespace.json
+      parent_path: /Shared/al-ghurair-procurement
+      permissions:
+        - level: CAN_RUN
+          group_name: ${var.can_run_group}
+
+  jobs:
+    setup_data:
+      name: "[GenieOne] Install Al Ghurair Demo Data"
+      tasks:
+        - task_key: generate_data
+          notebook_task:
+            notebook_path: ./src/data_generator.py
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+          environment_key: serverless
+      environments:
+        - environment_key: serverless
+          spec:
+            client: "4"
+
+targets:
+  dev:
+    mode: development
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
+  production:
+    default: true
+    mode: production
+    workspace:
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}

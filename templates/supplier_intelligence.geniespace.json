@@ -1,0 +1,170 @@
+{
+  "version": 2,
+  "config": {
+    "sample_questions": [
+      {
+        "id": "01f1957d066e1056b89fa3829ba20c0b",
+        "question": [
+          "What's the overall rating trend for Al Naboodah Construction over the last 6 quarters?"
+        ]
+      },
+      {
+        "id": "01f1957d069111588d889980bbfe0125",
+        "question": [
+          "Which Tier 1 suppliers have all certifications current and valid?"
+        ]
+      },
+      {
+        "id": "01f1957d06b4187180ccf8ec2e2b1e8d",
+        "question": [
+          "Compare delivery and safety scores between our top 5 rated suppliers"
+        ]
+      },
+      {
+        "id": "01f1957d06da1aa08da75da73e497994",
+        "question": [
+          "Show me suppliers established before 2000 with more than 2000 employees"
+        ]
+      },
+      {
+        "id": "01f1957d07041f019f0fc2dc4abf085d",
+        "question": [
+          "Which suppliers have ISO 45001 certification expiring in the next 12 months?"
+        ]
+      },
+      {
+        "id": "01f1957d1de5102893d10374ab27a5d9",
+        "question": [
+          "Show me all bids for the Deira Waterfront project ranked by overall weighted score"
+        ]
+      },
+      {
+        "id": "01f1957d1e0a1664a7787537c40a241f",
+        "question": [
+          "What's the spread between highest and lowest bid for each active RFP?"
+        ]
+      },
+      {
+        "id": "01f1957d1e30195795697b289c1e2bb1",
+        "question": [
+          "Which suppliers proposed lump sum pricing vs cost-plus for RFP-2026-002?"
+        ]
+      },
+      {
+        "id": "01f1957d1e54159ea4f1cfb7f5bc396f",
+        "question": [
+          "List all RFPs in evaluation status with their total number of bids received"
+        ]
+      },
+      {
+        "id": "01f1957d1e7814a690c10647c9be8853",
+        "question": [
+          "Break down bid line items for the top-scoring bid on the Deira Waterfront project"
+        ]
+      },
+      {
+        "id": "01f1957d288416a5a1484226c6e9b5c1",
+        "question": [
+          "What's the current market rate for structural steel and concrete in Dubai?"
+        ]
+      },
+      {
+        "id": "01f1957d28a810efacf90b71b09a3c63",
+        "question": [
+          "How have MEP HVAC rates trended over the last 2 years in the Dubai market?"
+        ]
+      },
+      {
+        "id": "01f1957d28cf1ac1b0e75cbc831fb110",
+        "question": [
+          "Show me budget allocation breakdown for the Deira Waterfront project"
+        ]
+      },
+      {
+        "id": "01f1957d28f311a6a0de000f6b1ce813",
+        "question": [
+          "Which projects have spent more than 50% of their contingency allocation?"
+        ]
+      },
+      {
+        "id": "01f1957d2916135894c05543ff5b3a7e",
+        "question": [
+          "Compare median rates for interior fit-out Grade A vs Standard across all periods"
+        ]
+      },
+      {
+        "id": "01f1957d787d17c982034e962ecbae35",
+        "question": [
+          "Show me SLA breach rate by supplier across all historical contracts"
+        ]
+      },
+      {
+        "id": "01f1957d78a313a5aac63fc71fd66b9e",
+        "question": [
+          "Which suppliers delivered on time vs had delays, and what penalties were applied?"
+        ]
+      },
+      {
+        "id": "01f1957d78c719fb96d3efc165dfeffd",
+        "question": [
+          "What was the total value of variation orders for Larsen & Toubro on the KIZAD project?"
+        ]
+      },
+      {
+        "id": "01f1957d78f01b1bae3350b925dbcddb",
+        "question": [
+          "Compare average SLA performance for safety incidents across all active contracts"
+        ]
+      },
+      {
+        "id": "01f1957d79141d2bb500284c35d61418",
+        "question": [
+          "Which contracts had more than 5 variation orders and what were the reasons?"
+        ]
+      },
+      {
+        "id": "01f1957d83201be495aecaa8b4ac62a1",
+        "question": [
+          "What's the average winning bid discount to estimated value for mixed-use developments in Dubai?"
+        ]
+      },
+      {
+        "id": "01f1957d834417bda4172f3517b4b387",
+        "question": [
+          "How many bidders typically compete for projects above 300M AED?"
+        ]
+      },
+      {
+        "id": "01f1957d83681fefafc261e7286fe3b1",
+        "question": [
+          "What profile of contractor wins government vs private projects?"
+        ]
+      },
+      {
+        "id": "01f1957d838f1371a91d9c2ad2772262",
+        "question": [
+          "Show me the construction cost index and steel price index trend over the last 12 months"
+        ]
+      },
+      {
+        "id": "01f1957d83b4103eb28dd444e9cb65d9",
+        "question": [
+          "What's the average project duration for high-rise towers vs warehouses in the UAE?"
+        ]
+      }
+    ]
+  },
+  "data_sources": {
+    "tables": [
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.supplier_certifications"
+      },
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.supplier_ratings"
+      },
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.suppliers"
+      }
+    ]
+  }
+}

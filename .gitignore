@@ -1,0 +1,8 @@
+.DS_Store
+.databricks/
+.generated/
+.mypy_cache/
+__pycache__/
+*.pyc
+.env
+.env.*

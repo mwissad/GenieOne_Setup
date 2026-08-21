@@ -1,0 +1,390 @@
+{
+  "version": 2,
+  "config": {
+    "sample_questions": [
+      {
+        "id": "01f1957d9c461736aa463232f851d416",
+        "question": [
+          "Show me all bids for the Deira Waterfront project ranked by overall weighted score"
+        ]
+      },
+      {
+        "id": "01f1957d9c6a1e94860ff0ba6a60b947",
+        "question": [
+          "What's the spread between highest and lowest bid for each active RFP?"
+        ]
+      },
+      {
+        "id": "01f1957d9c921df5ab5ec98f9e931af4",
+        "question": [
+          "Which suppliers proposed lump sum pricing vs cost-plus for RFP-2026-002?"
+        ]
+      },
+      {
+        "id": "01f1957d9cb61c9f90bacca7ceefde21",
+        "question": [
+          "List all RFPs in evaluation status with their total number of bids received"
+        ]
+      },
+      {
+        "id": "01f1957d9cda1b03a842413d6d67ba52",
+        "question": [
+          "Break down bid line items for the top-scoring bid on the Deira Waterfront project"
+        ]
+      }
+    ]
+  },
+  "data_sources": {
+    "tables": [
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.market_competitor_bids"
+      },
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.market_indices"
+      }
+    ]
+  },
+  "instructions": {
+    "join_specs": [
+      {
+        "id": "01f1957e289018bdb2ec38c85536d33f",
+        "left": {
+          "identifier": "__CATALOG__.__SCHEMA__.historical_contracts"
+        },
+        "right": {
+          "identifier": "__CATALOG__.__SCHEMA__.sla_performance"
+        },
+        "sql": [
+          "historical_contracts.contract_id = sla_performance.contract_id",
+          "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+        ],
+        "comment": [
+          "Contracts to SLA Performance"
+        ]
+      },
+      {
+        "id": "01f1957e28901bb88ad0b94981b96325",
+        "left": {
+          "identifier": "__CATALOG__.__SCHEMA__.historical_contracts"
+        },
+        "right": {
+          "identifier": "__CATALOG__.__SCHEMA__.delivery_metrics"
+        },
+        "sql": [
+          "historical_contracts.contract_id = delivery_metrics.contract_id",
+          "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+        ],
+        "comment": [
+          "Contracts to Delivery Metrics"
+        ]
+      },
+      {
+        "id": "01f19580c9191f5cb3d86b882c120bc9",
+        "left": {
+          "identifier": "__CATALOG__.__SCHEMA__.risk_scores"
+        },
+        "right": {
+          "identifier": "__CATALOG__.__SCHEMA__.supplier_financial_health"
+        },
+        "sql": [
+          "risk_scores.supplier_id = supplier_financial_health.supplier_id",
+          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_ONE--"
+        ],
+        "comment": [
+          "Risk Scores to Financial Health"
+        ]
+      },
+      {
+        "id": "01f19580c91a125aa95e34cd01646b00",
+        "left": {
+          "identifier": "__CATALOG__.__SCHEMA__.risk_scores"
+        },
+        "right": {
+          "identifier": "__CATALOG__.__SCHEMA__.compliance_checks"
+        },
+        "sql": [
+          "risk_scores.supplier_id = compliance_checks.supplier_id",
+          "--rt=FROM_RELATIONSHIP_TYPE_MANY_TO_MANY--"
+        ],
+        "comment": [
+          "Risk Scores to Compliance Checks"
+        ]
+      },
+      {
+        "id": "01f1958100d41bee89e144ce187a8c55",
+        "left": {
+          "identifier": "__CATALOG__.__SCHEMA__.rfp_projects"
+        },
+        "right": {
+          "identifier": "__CATALOG__.__SCHEMA__.bids"
+        },
+        "sql": [
+          "rfp_projects.rfp_id = bids.rfp_id",
+          "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+        ],
+        "comment": [
+          "RFPs to Bids"
+        ]
+      },
+      {
+        "id": "01f1958100d41f3ba76c4959210cb986",
+        "left": {
+          "identifier": "__CATALOG__.__SCHEMA__.bids"
+        },
+        "right": {
+          "identifier": "__CATALOG__.__SCHEMA__.bid_line_items"
+        },
+        "sql": [
+          "bids.bid_id = bid_line_items.bid_id",
+          "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+        ],
+        "comment": [
+          "Bids to Line Items"
+        ]
+      },
+      {
+        "id": "01f1958121761051afdca4625577c0a8",
+        "left": {
+          "identifier": "__CATALOG__.__SCHEMA__.suppliers"
+        },
+        "right": {
+          "identifier": "__CATALOG__.__SCHEMA__.supplier_ratings"
+        },
+        "sql": [
+          "suppliers.supplier_id = supplier_ratings.supplier_id",
+          "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+        ],
+        "comment": [
+          "Suppliers to Ratings"
+        ]
+      },
+      {
+        "id": "01f19581217613c9a6f2178f26b6b955",
+        "left": {
+          "identifier": "__CATALOG__.__SCHEMA__.suppliers"
+        },
+        "right": {
+          "identifier": "__CATALOG__.__SCHEMA__.supplier_certifications"
+        },
+        "sql": [
+          "suppliers.supplier_id = supplier_certifications.supplier_id",
+          "--rt=FROM_RELATIONSHIP_TYPE_ONE_TO_MANY--"
+        ],
+        "comment": [
+          "Suppliers to Certifications"
+        ]
+      }
+    ],
+    "sql_snippets": {
+      "filters": [
+        {
+          "id": "01f1957e289a1296b134e607f1555a62",
+          "sql": [
+            "sla_performance.status = 'breached'"
+          ],
+          "display_name": "SLA Breached"
+        },
+        {
+          "id": "01f1957e289a1531bec32eee11c6561b",
+          "sql": [
+            "delivery_metrics.item_type = 'variation_order'"
+          ],
+          "display_name": "Variation Orders Only"
+        },
+        {
+          "id": "01f1957e289a178090f1db119457cc98",
+          "sql": [
+            "delivery_metrics.item_type = 'delay_penalty'"
+          ],
+          "display_name": "Delay Penalties Only"
+        },
+        {
+          "id": "01f19580c9221ab4bbe8953d5d43e6f9",
+          "sql": [
+            "risk_scores.risk_level IN ('high', 'critical')"
+          ],
+          "display_name": "High or Critical Risk"
+        },
+        {
+          "id": "01f19580c9221de6b0d0abb110d38922",
+          "sql": [
+            "compliance_checks.status IN ('failed', 'expired')"
+          ],
+          "display_name": "Failed or Expired Compliance"
+        },
+        {
+          "id": "01f19580ea83126cbf0cf96ec511a98e",
+          "sql": [
+            "pricing_benchmarks.period = (SELECT MAX(period) FROM __CATALOG__.__SCHEMA__.pricing_benchmarks)"
+          ],
+          "display_name": "Current Period Rates"
+        },
+        {
+          "id": "01f1958100db183ba37d23b7ca0924e7",
+          "sql": [
+            "rfp_projects.status = 'evaluation'"
+          ],
+          "display_name": "RFPs Under Evaluation"
+        },
+        {
+          "id": "01f1958100db1a29bfe7fa7539ce199c",
+          "sql": [
+            "rfp_projects.priority IN ('critical', 'high')"
+          ],
+          "display_name": "Critical & High Priority RFPs"
+        },
+        {
+          "id": "01f19581218611b896c206c2ba0cc0d7",
+          "sql": [
+            "suppliers.tier = 'Tier 1'"
+          ],
+          "display_name": "Tier 1 Suppliers Only"
+        },
+        {
+          "id": "01f195812186167d98fd7c233d97bd3a",
+          "sql": [
+            "supplier_certifications.cert_status = 'active'"
+          ],
+          "display_name": "Active Certifications Only"
+        },
+        {
+          "id": "01f1958121861ad1a450ac739c2bc38e",
+          "sql": [
+            "suppliers.country = 'UAE'"
+          ],
+          "display_name": "UAE Local Suppliers"
+        }
+      ],
+      "expressions": [
+        {
+          "id": "01f1957e09041e07b3143bdb3c6cfdef",
+          "sql": [
+            "(market_competitor_bids.estimated_value_aed - market_competitor_bids.winning_bid_aed) / market_competitor_bids.estimated_value_aed * 100"
+          ],
+          "display_name": "Winning Bid Discount %"
+        },
+        {
+          "id": "01f1957e090511199a1d8fdc49de52f6",
+          "sql": [
+            "market_competitor_bids.highest_bid_aed - market_competitor_bids.lowest_bid_aed"
+          ],
+          "display_name": "Bid Spread (Highest vs Lowest)"
+        },
+        {
+          "id": "01f1957e28991eff9b0c00f5aaf235cf",
+          "sql": [
+            "(historical_contracts.actual_duration_months - historical_contracts.planned_duration_months) * 1.0 / historical_contracts.planned_duration_months * 100"
+          ],
+          "display_name": "Schedule Overrun %"
+        },
+        {
+          "id": "01f19580c923121ca281b79a9336e534",
+          "sql": [
+            "CASE WHEN supplier_financial_health.current_ratio >= 1.5 AND supplier_financial_health.debt_to_equity <= 0.7 AND supplier_financial_health.credit_rating IN ('A+', 'A', 'A-') THEN 'Strong' WHEN supplier_financial_health.current_ratio >= 1.0 THEN 'Adequate' ELSE 'Weak' END"
+          ],
+          "display_name": "Financial Health Classification"
+        },
+        {
+          "id": "01f19580ea82182b82eaa044695cddd1",
+          "sql": [
+            "budget_allocations.spent_amount_aed / budget_allocations.allocated_amount_aed * 100"
+          ],
+          "display_name": "Budget Utilization %"
+        },
+        {
+          "id": "01f19580ea8314d5900befe7bfbaae9c",
+          "sql": [
+            "(pricing_benchmarks.high_rate - pricing_benchmarks.low_rate) / pricing_benchmarks.median_rate * 100"
+          ],
+          "display_name": "Rate Variance % (market spread)"
+        },
+        {
+          "id": "01f1958100db12719c312b7b68fb87bc",
+          "sql": [
+            "(bids.bid_amount_aed - rfp_projects.estimated_budget_aed) / rfp_projects.estimated_budget_aed * 100"
+          ],
+          "display_name": "Bid Premium %"
+        },
+        {
+          "id": "01f1958100db15d3a38358a53ab08aba",
+          "sql": [
+            "bids.technical_score * 0.6 + bids.commercial_score * 0.4"
+          ],
+          "display_name": "Weighted Score (60/40)"
+        },
+        {
+          "id": "01f1958121861ff48e7d0f634aac71f7",
+          "sql": [
+            "CASE WHEN supplier_ratings.overall_score >= 4.5 THEN 'Top Rated' WHEN supplier_ratings.overall_score >= 3.5 THEN 'Good' WHEN supplier_ratings.overall_score >= 2.5 THEN 'Average' ELSE 'Below Average' END"
+          ],
+          "display_name": "Supplier Rating Tier"
+        }
+      ],
+      "measures": [
+        {
+          "id": "01f1957e09051346a7c98379a4b71178",
+          "sql": [
+            "AVG(market_competitor_bids.num_bidders)"
+          ],
+          "display_name": "Average Number of Bidders"
+        },
+        {
+          "id": "01f1957e0905155fa70276d8a6e44bfc",
+          "sql": [
+            "AVG((market_competitor_bids.estimated_value_aed - market_competitor_bids.winning_bid_aed) / market_competitor_bids.estimated_value_aed * 100)"
+          ],
+          "display_name": "Average Winning Bid Discount %"
+        },
+        {
+          "id": "01f1957e090517a2b6d073f52d897987",
+          "sql": [
+            "market_indices.index_value - LAG(market_indices.index_value) OVER (PARTITION BY market_indices.index_name ORDER BY market_indices.month)"
+          ],
+          "display_name": "Year-over-Year Index Change"
+        },
+        {
+          "id": "01f19580c9231046ad6c223c0cbae99e",
+          "sql": [
+            "AVG(risk_scores.risk_score)"
+          ],
+          "display_name": "Average Risk Score"
+        },
+        {
+          "id": "01f19580ea821b3c8c369822fe5b4616",
+          "sql": [
+            "SUM(budget_allocations.allocated_amount_aed)"
+          ],
+          "display_name": "Total Budget Allocated"
+        },
+        {
+          "id": "01f19580ea821da0a4d0d4ebb616ae24",
+          "sql": [
+            "SUM(budget_allocations.spent_amount_aed)"
+          ],
+          "display_name": "Total Budget Spent"
+        },
+        {
+          "id": "01f19580ea83109ba1dedc19361f3490",
+          "sql": [
+            "SUM(budget_allocations.remaining_amount_aed)"
+          ],
+          "display_name": "Total Budget Remaining"
+        },
+        {
+          "id": "01f1958100db1ee2a636f3e6ff9430a1",
+          "sql": [
+            "MAX(bids.bid_amount_aed) - MIN(bids.bid_amount_aed)"
+          ],
+          "display_name": "Bid Spread (Max - Min)"
+        },
+        {
+          "id": "01f1958121861daa8685d661e8170b0b",
+          "sql": [
+            "AVG(supplier_ratings.overall_score)"
+          ],
+          "display_name": "Average Overall Rating"
+        }
+      ]
+    }
+  }
+}

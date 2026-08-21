@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "data_sources": {
+    "tables": [
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.delivery_metrics"
+      },
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.historical_contracts"
+      },
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.sla_performance"
+      }
+    ]
+  }
+}

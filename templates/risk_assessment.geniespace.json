@@ -1,0 +1,50 @@
+{
+  "version": 2,
+  "config": {
+    "sample_questions": [
+      {
+        "id": "01f1957ce8f61687a32608d5360e4fee",
+        "question": [
+          "Show me all high or critical risk scores for suppliers bidding on the Deira Waterfront project"
+        ]
+      },
+      {
+        "id": "01f1957ce91816c7a070ebe1ea0fef4d",
+        "question": [
+          "Which suppliers have failed or expired compliance checks in 2026?"
+        ]
+      },
+      {
+        "id": "01f1957ce93c1de1a2ce545bf9873bac",
+        "question": [
+          "Compare financial health — current ratio and credit rating — for all Tier 1 suppliers"
+        ]
+      },
+      {
+        "id": "01f1957ce9601a17945a4d262c737356",
+        "question": [
+          "What are the top risk categories across all active RFP evaluations?"
+        ]
+      },
+      {
+        "id": "01f1957ce9841fa2acde3afb9f629601",
+        "question": [
+          "Which suppliers have a debt-to-equity ratio above 0.6 and bonding capacity below 50M AED?"
+        ]
+      }
+    ]
+  },
+  "data_sources": {
+    "tables": [
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.compliance_checks"
+      },
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.risk_scores"
+      },
+      {
+        "identifier": "__CATALOG__.__SCHEMA__.supplier_financial_health"
+      }
+    ]
+  }
+}
