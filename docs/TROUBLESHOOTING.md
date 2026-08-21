@@ -61,6 +61,19 @@ The group must already exist in the target workspace.
 For safe SQL and Genie rendering, the installer accepts identifiers containing
 letters, numbers, and underscores, with a letter or underscore first.
 
+## Notebook: `warehouse_id` is empty
+
+Open **SQL Warehouses**, click the warehouse, and copy the ID from the URL
+(`/sql/warehouses/<id>`). Paste it into the `warehouse_id` widget, then
+Run all again.
+
+## Notebook: cannot create Genie spaces
+
+The notebook user needs permission to create Genie spaces and to write the
+parent folder (default `/Shared/al-ghurair-procurement`). Tables must already
+exist in `catalog.schema` from the earlier cells. Run all from the top; do
+not start from the Genie cell alone.
+
 ## Partial deployment
 
 Fix the reported permission or configuration error and rerun the same install

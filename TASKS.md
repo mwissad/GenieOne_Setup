@@ -9,3 +9,4 @@
 - [x] Add architecture and troubleshooting documentation
 - [x] Validate with a Genie-enabled Databricks CLI
 - [x] Deploy the data job before Genie spaces so table checks succeed
+- [x] Add a self-contained notebook installer as a CLI alternative

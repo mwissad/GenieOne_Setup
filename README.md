@@ -2,19 +2,50 @@
 
 Reusable installer for the Al Ghurair procurement bid-evaluation demo.
 
-One command creates:
+Choose one path:
+
+- **Notebook:** import `src/install_genieone.py` and Run all
+- **CLI:** run `./install.sh` from a laptop
+
+Both paths create:
 
 - 16 synthetic Unity Catalog tables
 - 6 Genie agents
-- A serverless setup job
-- The supporting documentation in this repo
+- Supporting documentation in this repo
 
-The data, Genie spaces, and docs are installed together. You do not need a
-separate data job after deploy.
+The data is created before the Genie spaces, because Genie checks that
+referenced tables exist at space-creation time.
 
 ## How to install
 
-### 1. Install the Databricks CLI (v1.3.0 or newer)
+### Option A — Self-contained notebook (no CLI)
+
+Use this if you want to stay in the Databricks UI.
+
+1. Import [`src/install_genieone.py`](src/install_genieone.py) into the
+   workspace (**Workspace → Import**), or add this Git repo as a Databricks
+   Git folder and open that notebook.
+2. Attach **serverless** notebook compute, or any Spark cluster.
+3. Set the widgets:
+
+   | Widget | Example |
+   | --- | --- |
+   | `catalog` | `main` |
+   | `schema` | `bid_evaluation_demo` |
+   | `warehouse_id` | SQL warehouse ID from the warehouse URL |
+   | `parent_path` | `/Shared/al-ghurair-procurement` |
+   | `can_run_group` | `users` |
+
+   Find the warehouse ID in **SQL Warehouses → your warehouse**. It is the
+   last segment of `/sql/warehouses/<id>`.
+4. **Run all**.
+
+The notebook writes the 16 tables, then creates or updates the six Genie
+spaces in `parent_path`. It is safe to rerun.
+
+### Option B — CLI installer
+
+#### 1. Install the Databricks CLI (v1.3.0 or newer)
 
 Genie Space bundle resources require CLI **v1.3.0+**.
 
@@ -35,7 +66,7 @@ databricks version
 
 If `databricks version` reports `v0.x`, upgrade before continuing.
 
-### 2. Authenticate to the target workspace
+#### 2. Authenticate to the target workspace
 
 ```bash
 databricks auth login https://YOUR-WORKSPACE-HOST --profile YOUR_PROFILE
@@ -44,7 +75,7 @@ databricks current-user me --profile YOUR_PROFILE
 
 Use that same profile name in the installer.
 
-### 3. Collect three required values
+#### 3. Collect three required values
 
 | Value | How to find it |
 | --- | --- |
@@ -66,7 +97,7 @@ databricks warehouses list --profile YOUR_PROFILE
 
 You also need permission to create schemas, tables, jobs, and Genie spaces.
 
-### 4. Clone the repo
+#### 4. Clone the repo
 
 ```bash
 git clone https://github.com/mwissad/GenieOne_Setup.git
@@ -74,7 +105,7 @@ cd GenieOne_Setup
 chmod +x install.sh
 ```
 
-### 5. Run the installer
+#### 5. Run the installer
 
 ```bash
 ./install.sh \
@@ -129,7 +160,7 @@ Dry run (no deploy):
 The installer is safe to rerun. Tables are overwritten with the same
 synthetic dataset, and bundle resources are updated in place.
 
-### 6. Verify
+### Verify
 
 After a successful run you should see:
 
@@ -172,12 +203,14 @@ All records are synthetic and intended for demos only.
 ## Repository structure
 
 ```text
-install.sh                 Complete installer
-databricks.yml             Bundle resources and targets
-src/data_generator.py      Parameterized synthetic data notebook
-templates/                 Canonical Genie templates
-scripts/render_assets.py   Renders target catalog/schema references
-docs/                      Architecture and troubleshooting
+install.sh                      CLI installer
+src/install_genieone.py         Self-contained notebook installer
+src/data_generator.py           Data-only notebook used by the CLI job
+databricks.yml                  Bundle resources and targets
+templates/                      Canonical Genie templates
+scripts/build_install_notebook.py
+                                Regenerates the notebook from templates
+docs/                           Architecture and troubleshooting
 ```
 
 See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the component model and
